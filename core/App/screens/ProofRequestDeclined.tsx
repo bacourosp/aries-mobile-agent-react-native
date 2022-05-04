@@ -1,4 +1,5 @@
-import { useCredentialById } from '@aries-framework/react-hooks'
+import { ProofState } from '@aries-framework/core'
+import { useProofById } from '@aries-framework/react-hooks'
 import { useNavigation } from '@react-navigation/core'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,22 +15,22 @@ import { GenericFn } from '../types/fn'
 import { Screens, TabStacks } from '../types/navigators'
 import { testIdWithKey } from '../utils/testable'
 
-export interface CredentialOfferDeclineProps {
+export interface ProofRequestDeclinedProps {
   visible: boolean
-  credentialId: string
+  proofId: string
   didDeclineOffer: boolean
   onGoBackTouched: GenericFn
   onDeclinedConformationTouched: GenericFn
 }
 
-const CredentialOfferDecline: React.FC<CredentialOfferDeclineProps> = ({
+const ProofRequestDeclined: React.FC<ProofRequestDeclinedProps> = ({
   visible,
-  credentialId,
+  proofId,
   didDeclineOffer,
   onGoBackTouched,
   onDeclinedConformationTouched,
 }) => {
-  const credential = useCredentialById(credentialId)
+  const proof = useProofById(proofId)
   const { t } = useTranslation()
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const navigation = useNavigation()
@@ -59,8 +60,8 @@ const CredentialOfferDecline: React.FC<CredentialOfferDeclineProps> = ({
     },
   })
 
-  if (!credential) {
-    throw new Error('Unable to fetch credential from AFJ')
+  if (!proof) {
+    throw new Error('Unable to fetch proof from AFJ')
   }
 
   const onDoneTouched = () => {
@@ -79,23 +80,22 @@ const CredentialOfferDecline: React.FC<CredentialOfferDeclineProps> = ({
             <>
               <InfoBox
                 notificationType={InfoBoxType.Warn}
-                title={t('CredentialOffer.ConfirmDeclinedTitle')}
-                message={t('CredentialOffer.ConfirmDeclinedMessage')}
+                title={t('ProofRequest.ConfirmDeclinedTitle')}
+                message={t('ProofRequest.ConfirmDeclinedMessage')}
               />
-              <CredentialCard credential={credential} style={{ marginVertical: 25 }} />
-              <View>
+              <View style={{ marginVertical: 25 }}>
                 <Button
-                  title={t('CredentialOffer.ConfirmDecline')}
-                  accessibilityLabel={t('CredentialOffer.ConfirmDecline')}
-                  testID={testIdWithKey('ConfirmDeclineCredential')}
+                  title={t('ProofRequest.ConfirmDecline')}
+                  accessibilityLabel={t('ProofRequest.ConfirmDecline')}
+                  testID={testIdWithKey('ConfirmDeclineProofRequest')}
                   onPress={onDeclinedConformationTouched}
                   buttonType={ButtonType.Primary}
                 />
                 <View style={[{ marginTop: 10 }]}>
                   <Button
-                    title={t('CredentialOffer.AbortDecline')}
-                    accessibilityLabel={t('CredentialOffer.AbortDecline')}
-                    testID={testIdWithKey('AbortDeclineCredential')}
+                    title={t('ProofRequest.AbortDecline')}
+                    accessibilityLabel={t('ProofRequest.AbortDecline')}
+                    testID={testIdWithKey('AbortDeclineProofRequest')}
                     onPress={onGoBackTouched}
                     buttonType={ButtonType.Secondary}
                   />
@@ -107,7 +107,10 @@ const CredentialOfferDecline: React.FC<CredentialOfferDeclineProps> = ({
           {didDeclineOffer && (
             <>
               <View style={[styles.messageContainer]}>
-                <Text style={[TextTheme.headingThree, styles.messageText]} testID={testIdWithKey('CredentialDeclined')}>
+                <Text
+                  style={[TextTheme.headingThree, styles.messageText]}
+                  testID={testIdWithKey('ProofRequestDeclined')}
+                >
                   {t('CredentialOffer.CredentialDeclined')}
                 </Text>
                 <CredentialDeclined style={[styles.image]} {...imageDisplayOptions} />
@@ -130,4 +133,4 @@ const CredentialOfferDecline: React.FC<CredentialOfferDeclineProps> = ({
   )
 }
 
-export default CredentialOfferDecline
+export default ProofRequestDeclined
